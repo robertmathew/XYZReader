@@ -5,22 +5,22 @@ repositories {
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:support-v13:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.android.support:palette-v7:23.3.0'
-    compile 'com.android.support:recyclerview-v7:23.3.0'
-    compile 'com.android.support:cardview-v7:23.3.0'
+    compile 'com.android.support:support-v4:24.0.0'
+    compile 'com.android.support:support-v13:24.0.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:palette-v7:24.0.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile files('libs/volley.jar')
 }
