@@ -33,6 +33,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.github.florent37.picassopalette.PicassoPalette;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -43,6 +45,7 @@ import com.squareup.picasso.Target;
  */
 public class ArticleDetailFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
     private static final String TAG = "ArticleDetailFragment";
 
     public static final String ARG_ITEM_ID = "item_id";
@@ -92,7 +95,7 @@ public class ArticleDetailFragment extends Fragment implements
         /*mIsCard = getResources().getBoolean(R.bool.detail_is_card);
         mStatusBarFullOpacityBottom = getResources().getDimensionPixelSize(
                 R.dimen.detail_card_top_margin);*/
-        /*setHasOptionsMenu(true);*/
+        setHasOptionsMenu(true);
     }
 
     public ArticleDetailActivity getActivityCast() {
@@ -112,7 +115,7 @@ public class ArticleDetailFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_article_detail, container, false);
 
         toolbar = (Toolbar) mRootView.findViewById(R.id.toolbar);
@@ -153,7 +156,7 @@ public class ArticleDetailFragment extends Fragment implements
             }
         });
 
-        bindViews();
+        //bindViews();
         /*updateStatusBar();*/
         return mRootView;
     }
@@ -212,68 +215,24 @@ public class ArticleDetailFragment extends Fragment implements
                             + mCursor.getString(ArticleLoader.Query.AUTHOR)
                             + "</font>"));
             Spanned bodyText = Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY));
-            Log.d("trty", bodyText.toString());
             bodyView.setText(bodyText);
-            /*ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
-                    .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            Bitmap bitmap = imageContainer.getBitmap();
-                            if (bitmap != null) {
-                                Palette p = Palette.generate(bitmap, 12);
-                                mMutedColor = p.getDarkMutedColor(0xFF333333);
-                                mPhotoView.setImageBitmap(imageContainer.getBitmap());
-                                mRootView.findViewById(R.id.meta_bar)
-                                        .setBackgroundColor(mMutedColor);
-                                *//*updateStatusBar();*//*
-                            }
-                        }
 
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                        }
-                    });*/
             int imageDimension =
                     (int) getResources().getDimension(R.dimen.image_size);
 
-            Picasso.with(getActivity())
-                    .load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+            Picasso.with(getActivity()).load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
                     .resize(imageDimension, imageDimension)
+                    .priority(Picasso.Priority.HIGH)
                     .centerCrop()
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            assert mPhotoView != null;
-                            mPhotoView.setImageBitmap(bitmap);
-                            Palette.from(bitmap)
-                                    .generate(new Palette.PaletteAsyncListener() {
-                                        @Override
-                                        public void onGenerated(Palette palette) {
-                                            Palette.Swatch textSwatch = palette.getVibrantSwatch();
-                                            if (textSwatch == null) {
-                                                Toast.makeText(getActivity(), "Null swatch :(", Toast.LENGTH_SHORT).show();
-                                                return;
-                                            }
-                                            mRootView.findViewById(R.id.meta_bar).setBackgroundColor(textSwatch.getRgb());
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                        }
-                    });
+                    .into(mPhotoView,
+                            PicassoPalette.with(mCursor.getString(ArticleLoader.Query.PHOTO_URL), mPhotoView)
+                                    .use(PicassoPalette.Profile.VIBRANT)
+                                    .intoBackground(mRootView.findViewById(R.id.meta_bar), PicassoPalette.Swatch.RGB)
+                    );
         } else {
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");
-            bylineView.setText("N/A" );
+            bylineView.setText("N/A");
             bodyView.setText("N/A");
         }
     }
@@ -298,7 +257,6 @@ public class ArticleDetailFragment extends Fragment implements
             mCursor.close();
             mCursor = null;
         }
-        //System.out.println(DatabaseUtils.dumpCursorToString(mCursor));
         bindViews();
     }
 
