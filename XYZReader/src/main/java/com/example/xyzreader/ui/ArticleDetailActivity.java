@@ -40,10 +40,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         mPager.setAdapter(mPagerAdapter);
 
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
 
             @Override
             public void onPageSelected(int position) {

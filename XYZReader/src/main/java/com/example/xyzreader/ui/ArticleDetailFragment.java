@@ -7,7 +7,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -87,8 +86,10 @@ public class ArticleDetailFragment extends Fragment implements
 
         Toolbar toolbar = (Toolbar) mRootView.findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActivityCast().setSupportActionBar(toolbar);
+        if (getActivityCast().getSupportActionBar() != null) {
+            getActivityCast().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         mPhotoView = (ImageView) mRootView.findViewById(R.id.backdrop);
 
