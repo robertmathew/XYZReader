@@ -5,7 +5,9 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -19,10 +21,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
-import com.github.florent37.picassopalette.PicassoPalette;
-import com.squareup.picasso.Picasso;
+import com.github.florent37.glidepalette.GlidePalette;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -134,15 +136,17 @@ public class ArticleDetailFragment extends Fragment implements
             int imageDimension =
                     (int) getResources().getDimension(R.dimen.image_size);
 
-            Picasso.with(getActivity()).load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
-                    .resize(imageDimension, imageDimension)
-                    .priority(Picasso.Priority.HIGH)
-                    .centerCrop()
-                    .into(mPhotoView,
-                            PicassoPalette.with(mCursor.getString(ArticleLoader.Query.PHOTO_URL), mPhotoView)
-                                    .use(PicassoPalette.Profile.VIBRANT)
-                                    .intoBackground(mRootView.findViewById(R.id.meta_bar), PicassoPalette.Swatch.RGB)
-                    );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mPhotoView.setTransitionName((getResources().getString(R.string.content_animation_image)).concat(mCursor.getString(ArticleLoader.Query._ID)));
+            }
+            Glide.with(getActivity()).load(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                    .listener(GlidePalette.with(mCursor.getString(ArticleLoader.Query.PHOTO_URL))
+                            .use(GlidePalette.Profile.VIBRANT)
+                            .intoBackground(mRootView.findViewById(R.id.meta_bar), GlidePalette.Swatch.RGB)
+                            .crossfade(true)
+                    )
+                    .into(mPhotoView);
+            ActivityCompat.startPostponedEnterTransition(getActivity());
         } else {
             mRootView.setVisibility(View.GONE);
             titleView.setText("N/A");

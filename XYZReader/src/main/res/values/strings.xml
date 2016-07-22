@@ -8,5 +8,7 @@
     <string name="action_share">Share</string>
 
     <string name="image">Image</string>
+    
+    <string name="content_animation_image" translatable="false">images</string>
 
 </resources>
